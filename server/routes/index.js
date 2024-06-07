@@ -40,13 +40,18 @@ try{
       cancel_url: `${process.env.YOUR_DOMAIN}/cancel`,
   });
 
+  // Retrieve the session to get the customer email
+
+  const sessionDetails = await stripe.checkout.sessions.retrieve(session.id);
+
   products.forEach(async (data)=>{
 
     const newProduct = await new Product({
-      // email: req.body.email,
+      email:sessionDetails.customer_email,
       productname: data.dets.productName,
       productimage:data.dets.productImage,
       productprice:data.dets.productPrice,
+      // status:session.status,
       status:"completed",
       stripeTransactionid:session.id
     });
